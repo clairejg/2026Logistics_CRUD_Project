@@ -28,26 +28,23 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { SUPPLIER_BASE_URL } from '@/config/apiConfig'
 
-const API = 'http://localhost:8082/api/suppliers'
+const API = `${SUPPLIER_BASE_URL}/suppliers`
 const suppliers = ref([])
 const editing = ref(false)
 const form = ref({ id: null, name: '', contactEmail: '', phone: '', address: '' })
 
-const load = async () => { suppliers.value = (await axios.get(API)).data }
+const load = async () => { suppliers.value = await fetch(API).then(r => r.json()) }
 
 const save = async () => {
-  if (editing.value) {
-    await axios.put(`${API}/${form.value.id}`, form.value)
-  } else {
-    await axios.post(API, form.value)
-  }
+  const opts = { method: editing.value ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form.value) }
+  await fetch(editing.value ? `${API}/${form.value.id}` : API, opts)
   reset(); load()
 }
 
 const edit = (s) => { form.value = { ...s }; editing.value = true }
-const remove = async (id) => { await axios.delete(`${API}/${id}`); load() }
+const remove = async (id) => { await fetch(`${API}/${id}`, { method: 'DELETE' }); load() }
 const reset = () => { form.value = { id: null, name: '', contactEmail: '', phone: '', address: '' }; editing.value = false }
 
 onMounted(load)
