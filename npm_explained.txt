@@ -1,0 +1,86 @@
+NPM & Node.js Concepts Explained
+==================================
+
+1. NODE.JS PACKAGE MANAGER (npm)
+---------------------------------
+Node.js is a runtime that lets you run JavaScript outside a browser.
+npm (Node Package Manager) is its built-in tool for managing reusable code
+libraries (called "packages") that other developers have written and shared publicly.
+
+Think of it like an app store, but for code. Instead of building everything
+from scratch, you download pre-built packages.
+
+
+2. DEPENDENCIES
+---------------
+Dependencies are external code libraries your project NEEDS to function.
+
+For example, if you're building a web server and you use a library called
+"express" to handle it, your project depends on express.
+Without it, your code breaks.
+
+  Your Project
+      └── needs express         <- dependency
+           └── needs other packages  <- express's own dependencies
+
+
+3. PACKAGE.JSON
+---------------
+It's the identity/config file of your project. It stores:
+  - Project name, version, description
+  - List of all dependencies your project needs
+  - Scripts you can run (like start, test, build)
+
+Example:
+  {
+    "name": "my-app",
+    "version": "1.0.0",
+    "dependencies": {
+      "express": "^4.18.0"
+    },
+    "scripts": {
+      "start": "node index.js"
+    }
+  }
+
+Think of it like a recipe card — it lists all the ingredients (dependencies)
+your project needs.
+
+
+4. NODE_MODULES/
+----------------
+This is the folder where all downloaded dependency code actually LIVES on
+your computer after running "npm install".
+
+  my-project/
+    ├── package.json       <- lists what you need
+    ├── node_modules/      <- the actual downloaded code
+    │     ├── express/
+    │     └── ...
+
+  - It can get very large (thousands of files)
+  - You never edit code inside it
+  - You never commit it to Git (add it to .gitignore)
+  - Teammates just run "npm install" to regenerate it
+
+
+5. PACKAGE-LOCK.JSON
+---------------------
+While package.json says "express": "^4.18.0" (meaning any version 4.18 or higher),
+package-lock.json records the EXACT version that was actually installed.
+
+This ensures every developer on your team installs the exact same versions,
+avoiding the "works on my machine" problem.
+
+  package.json       ->  "express": "^4.18.0"   (flexible range)
+  package-lock.json  ->  "express": "4.18.2"    (exact version locked)
+
+
+SIMPLE ANALOGY
+--------------
+  Thing               | Analogy
+  --------------------|----------------------------------------------
+  package.json        | Grocery list (ingredients needed)
+  npm install         | Going to the store to buy them
+  node_modules/       | Your fridge/pantry (actual items)
+  package-lock.json   | Receipt (exact brands/versions bought)
