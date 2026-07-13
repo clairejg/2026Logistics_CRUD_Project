@@ -2,28 +2,37 @@
   <div>
     <h2>Orders</h2>
     <div class="form-grid">
-      <input v-model.number="form.productId" placeholder="Product ID" type="number" />
-      <input v-model.number="form.supplierId" placeholder="Supplier ID" type="number" />
-      <input v-model.number="form.quantity" placeholder="Quantity" type="number" />
+      <input v-model="form.companyName" placeholder="Company Name" />
+      <input v-model="form.productName" placeholder="Product Name" />
+      <input v-model="form.country" placeholder="Country" />
+      <input v-model="form.state" placeholder="State" />
       <input v-model="form.orderDate" placeholder="Order Date" type="date" />
-      <select v-model="form.status">
-        <option value="PENDING">PENDING</option>
-        <option value="SHIPPED">SHIPPED</option>
-        <option value="DELIVERED">DELIVERED</option>
-      </select>
       <button class="btn-primary" @click="save">{{ editing ? 'Update' : 'Add' }}</button>
+      <button v-if="editing" @click="reset" style="background:#888;color:white;padding:8px 16px;border:none;border-radius:4px;cursor:pointer">Cancel</button>
     </div>
     <table>
       <thead>
-        <tr><th>ID</th><th>Product ID</th><th>Supplier ID</th><th>Qty</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+        <tr>
+          <th>Order ID</th>
+          <th>Company Name</th>
+          <th>Product Name</th>
+          <th>Country</th>
+          <th>State</th>
+          <th>Order Date</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody>
-        <tr v-for="o in orders" :key="o.id">
-          <td>{{ o.id }}</td><td>{{ o.productId }}</td><td>{{ o.supplierId }}</td>
-          <td>{{ o.quantity }}</td><td>{{ o.orderDate }}</td><td>{{ o.status }}</td>
+        <tr v-for="o in orders" :key="o.orderId">
+          <td>{{ o.orderId }}</td>
+          <td>{{ o.companyName }}</td>
+          <td>{{ o.productName }}</td>
+          <td>{{ o.country }}</td>
+          <td>{{ o.state }}</td>
+          <td>{{ o.orderDate }}</td>
           <td>
             <button class="btn-edit" @click="edit(o)">Edit</button>
-            <button class="btn-danger" @click="remove(o.id)" style="margin-left:6px">Delete</button>
+            <button class="btn-danger" @click="remove(o.orderId)" style="margin-left:6px">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -38,19 +47,19 @@ import { ORDER_BASE_URL } from '@/config/apiConfig'
 const API = `${ORDER_BASE_URL}/orders`
 const orders = ref([])
 const editing = ref(false)
-const form = ref({ id: null, productId: null, supplierId: null, quantity: 0, orderDate: '', status: 'PENDING' })
+const form = ref({ orderId: null, companyName: '', productName: '', country: '', state: '', orderDate: '' })
 
 const load = async () => { orders.value = await fetch(API).then(r => r.json()) }
 
 const save = async () => {
   const opts = { method: editing.value ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form.value) }
-  await fetch(editing.value ? `${API}/${form.value.id}` : API, opts)
+  await fetch(editing.value ? `${API}/${form.value.orderId}` : API, opts)
   reset(); load()
 }
 
 const edit = (o) => { form.value = { ...o }; editing.value = true }
 const remove = async (id) => { await fetch(`${API}/${id}`, { method: 'DELETE' }); load() }
-const reset = () => { form.value = { id: null, productId: null, supplierId: null, quantity: 0, orderDate: '', status: 'PENDING' }; editing.value = false }
+const reset = () => { form.value = { orderId: null, companyName: '', productName: '', country: '', state: '', orderDate: '' }; editing.value = false }
 
 onMounted(load)
 </script>

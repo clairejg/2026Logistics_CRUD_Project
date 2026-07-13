@@ -13,7 +13,9 @@ public class CompanyInfoService {
 
     private final CompanyInfoRepository repo;
 
-    public List<CompanyInfo> getAll() { return repo.findAll(); }
+    public List<CompanyInfo> getAll() {
+        System.out.println("getAll() from service");
+        return repo.findAll(); }
 
     public CompanyInfo getById(Integer id) {
         return repo.findById(id).orElseThrow(() -> new RuntimeException("CompanyInfo not found: " + id));

@@ -46,7 +46,9 @@ const companies = ref([])
 const editing = ref(false)
 const form = ref({ accountId: null, companyName: '', address: '', country: '', phone: '' })
 
-const load = async () => { companies.value = await fetch(API).then(r => r.json()) }
+const load = async () => {
+  console.log('loading companies...');
+companies.value = await fetch(API).then(r => r.json()) }
 
 const save = async () => {
   const opts = { method: editing.value ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form.value) }
